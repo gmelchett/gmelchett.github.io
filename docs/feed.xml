@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>My Mumblings</title>
+    <link>http://gmelchett.github.io</link>
+    <description>My Mumblings</description>
+    <managingEditor> (My Mumblings)</managingEditor>
+    <pubDate>Fri, 07 Aug 2026 12:49:54 +0200</pubDate>
+    <item>
+      <title>GitHub pages and static site generators</title>
+      <link>http://gmelchett.github.io/2026-08-07/blog.html</link>
+      <description>Well, this is my actually my first published blog post. I&amp;rsquo;ve been thinking of having a blog for years. I have a self hosted server reachable from the internet, but I&amp;rsquo;ve been reluctant&#xA;to p...</description>
+      <content:encoded><![CDATA[<p>Well, this is my actually my first published blog post. I&rsquo;ve been thinking of having a blog for years. I have a self hosted server reachable from the internet, but I&rsquo;ve been reluctant
+to put a blog on it, since the less exposure, the less liklihood of unexpected unwanted visitors. So I decided to try github pages.</p>
+<p>By default github pages supports Jerkyll, which I&rsquo;m sure is an excellent static site generator, and I&rsquo;m all to blame, not reading the manual etc. But I did just manage to get a white
+empty page when trying to change theme.. Yes, perhaps it would have worked when github generated the HTML, but I do really want to see what I&rsquo;m about to push locally first.
+So I changed to <a href="https://www.getzola.org/">Zola</a>, started to read the <a href="https://www.getzola.org/documentation/getting-started/overview/">Getting Started</a> and I created lot of template
+files according to the instruction, and then I wanted to use a theme. And the theme was not updated to match the latest Zola release. I did removed the theme, decided to push theme
+selection for the future and started to remove one level of pages (index -&gt; blog list -&gt; blogs) Somewhere here I did get lost in the templates, and I gave up on Zola as well..</p>
+<p><em>I just want to convert markdown to html and an index page using a decent theme, and RSS file. How hard can it be?</em></p>
+<p>I decided to write an <a href="https://github.com/gmelchett/jssg/blob/master/implementation-plan.md">implementation plan</a> for a static site generator and ask an LLM to implement it for me.
+One hour and $0.13 later, first version of the static site generator, <a href="https://github.com/gmelchett/jssg">jssg</a> was completed and in use for this blog.</p>
+]]></content:encoded>
+      <guid>http://gmelchett.github.io/2026-08-07/blog.html</guid>
+      <pubDate>Fri, 07 Aug 2026 00:00:00 +0000</pubDate>
+    </item>
+  </channel>
+</rss>

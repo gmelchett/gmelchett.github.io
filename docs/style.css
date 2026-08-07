@@ -1,0 +1,138 @@
+:root {
+    --fg: #d8d8d8;
+    --fg-dim: #8a8a8a;
+    --bg: #121212;
+    --link: #6cb6ff;
+    --link-visited: #b196ff;
+    --rule: #2a2a2a;
+    --code-bg: #1e2030;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--fg);
+}
+
+body {
+    font: 400 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.layout {
+    display: flex;
+    flex-direction: column;
+    flex: 1 0 auto;
+    width: 100%;
+    max-width: 740px;
+    margin: 3rem auto 2rem;
+    padding: 0 30px;
+}
+
+@media (max-width: 800px) {
+    .layout { padding: 0 15px; }
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    flex: 1 0 auto;
+    min-width: 0;
+}
+
+main {
+    max-width: none;
+    flex: 1 0 auto;
+    min-width: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 400;
+    margin: 1.6rem 0 0.6rem;
+    line-height: 1.25;
+}
+h1 { font-size: 32px; }
+h2 { font-size: 26px; margin-top: 2rem; }
+
+p, ul, ol, blockquote, pre {
+    margin: 0 0 15px;
+}
+
+a { color: var(--link); text-decoration: none; }
+a:visited { color: var(--link-visited); }
+a:hover { color: var(--fg); text-decoration: underline; }
+
+ul, ol { padding-left: 30px; }
+li { margin: 0.2rem 0; }
+
+pre, code {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 14px;
+    border-radius: 3px;
+}
+code { padding: 1px 5px; }
+pre { padding: 10px 14px; overflow-x: auto; line-height: 1.45; }
+pre code { border: 0; padding: 0; }
+
+blockquote {
+    color: var(--fg-dim);
+    border-left: 4px solid var(--rule);
+    padding-left: 15px;
+    font-size: 18px;
+    font-style: italic;
+}
+
+hr {
+    border: none;
+    border-top: 1px solid var(--rule);
+    margin: 2rem 0;
+}
+
+img, video, iframe {
+    max-width: 100%;
+    height: auto;
+}
+
+.post-meta {
+    color: var(--fg-dim);
+    font-size: 14px;
+}
+
+.post-list {
+    padding-left: 0;
+    list-style: none;
+}
+.post-list li {
+    padding-left: 0;
+    margin: 0.4rem 0;
+}
+.post-list time {
+    color: var(--fg-dim);
+    margin-right: 1ch;
+    font-variant-numeric: tabular-nums;
+}
+
+.site-footer {
+    margin: 4rem 0 1rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--rule);
+    text-align: center;
+    font-size: 14px;
+    color: var(--fg-dim);
+}
+
+.back-link {
+    margin-bottom: 1.5rem;
+}
+.back-link a {
+    color: var(--fg-dim);
+    font-size: 14px;
+}
+.back-link a:hover {
+    color: var(--link);
+}
