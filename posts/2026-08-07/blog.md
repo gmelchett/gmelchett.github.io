@@ -5,7 +5,7 @@ title: GitHub pages and static site generators
 Well, this is my actually my first published blog post. I've been thinking of having a blog for years. I have a self hosted server reachable from the internet, but I've been reluctant
 to put a blog on it, since the less exposure, the less liklihood of unexpected unwanted visitors. So I decided to try github pages.
 
-By default github pages supports Jerkyll, which I'm sure is an excellent static site generator, and I'm all to blame, not reading the manual etc. But I did just manage to get a white
+By default github pages supports [Jekyll](https://jekyllrb.com/), which I'm sure is an excellent static site generator, and I'm all to blame, not reading the manual etc. But I did just manage to get a white
 empty page when trying to change theme.. Yes, perhaps it would have worked when github generated the HTML, but I do really want to see what I'm about to push locally first.
 So I changed to [Zola](https://www.getzola.org/), started to read the [Getting Started](https://www.getzola.org/documentation/getting-started/overview/) and I created lot of template
 files according to the instruction, and then I wanted to use a theme. And the theme was not updated to match the latest Zola release. I did removed the theme, decided to push theme
