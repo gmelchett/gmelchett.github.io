@@ -4,7 +4,24 @@
     <link>http://gmelchett.github.io</link>
     <description>Jonas&#39; Mumblings</description>
     <managingEditor> (Jonas&#39; Mumblings)</managingEditor>
-    <pubDate>Fri, 07 Aug 2026 14:08:55 +0200</pubDate>
+    <pubDate>Sat, 08 Aug 2026 14:54:21 +0200</pubDate>
+    <item>
+      <title>.local inside incus containers</title>
+      <link>http://gmelchett.github.io/2026-08-08/avahi.html</link>
+      <description>I used to have a /etc/host that lists all my computers but with time that always got outdated, and sometimes out of sync with the DHCP server on my router.&#xA;For a brief period I tried with a subordinat...</description>
+      <content:encoded><![CDATA[<p>I used to have a <code>/etc/host</code> that lists all my computers but with time that always got outdated, and sometimes out of sync with the DHCP server on my router.
+For a brief period I tried with a subordinate DNS server, but that didn&rsquo;t really work well with Android for some reason I couldn&rsquo;t figure out. So I changed
+to install <code>avahi</code> on all my computers to provide <code>&lt;computername&gt;.local</code> names. Good thing is that <code>avahi</code> works out of the box for Android. Sadly not for
+the two Windows 10 gaming computers that two of my sons uses. (No Fortnite on Linux.)</p>
+<p>But for some reason <code>.local</code> names didn&rsquo;t work inside <code>incus</code> containers, despite installing <code>avahi</code> &amp; co. Earlier today I did ask an LLM why, and it said:</p>
+<p><em>On the host, edit <code>/etc/avahi/avahi-daemon.conf</code> and make sure you have set <code>enable-reflector</code> to <code>yes</code>, like this:</em></p>
+<pre style="color:#c0caf5;background-color:#1a1b26;-webkit-text-size-adjust:none;"><code><span style="display:flex;"><span><span style="color:#bb9af7">[reflector]</span>
+</span></span><span style="display:flex;"><span><span style="color:#7aa2f7">enable-reflector</span><span style="color:#9ece6a;font-weight:bold">=</span><span style="color:#9ece6a">yes</span>
+</span></span></code></pre><p>And after <code>sudo systemctl restart avahi-daemon</code>, <code>.local</code> names started to work inside <code>incus</code> containers.</p>
+]]></content:encoded>
+      <guid>http://gmelchett.github.io/2026-08-08/avahi.html</guid>
+      <pubDate>Sat, 08 Aug 2026 00:00:00 +0000</pubDate>
+    </item>
     <item>
       <title>GitHub pages and static site generators</title>
       <link>http://gmelchett.github.io/2026-08-07/blog.html</link>

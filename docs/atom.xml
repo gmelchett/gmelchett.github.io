@@ -1,12 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?><feed xmlns="http://www.w3.org/2005/Atom">
   <title>Jonas&#39; Mumblings</title>
   <id>http://gmelchett.github.io</id>
-  <updated>2026-08-07T14:08:55+02:00</updated>
+  <updated>2026-08-08T14:54:21+02:00</updated>
   <subtitle>Jonas&#39; Mumblings</subtitle>
   <link href="http://gmelchett.github.io"></link>
   <author>
     <name>Jonas&#39; Mumblings</name>
   </author>
+  <entry>
+    <title>.local inside incus containers</title>
+    <updated>2026-08-08T00:00:00Z</updated>
+    <id>http://gmelchett.github.io/2026-08-08/avahi.html</id>
+    <content type="html">&lt;p&gt;I used to have a &lt;code&gt;/etc/host&lt;/code&gt; that lists all my computers but with time that always got outdated, and sometimes out of sync with the DHCP server on my router.&#xA;For a brief period I tried with a subordinate DNS server, but that didn&amp;rsquo;t really work well with Android for some reason I couldn&amp;rsquo;t figure out. So I changed&#xA;to install &lt;code&gt;avahi&lt;/code&gt; on all my computers to provide &lt;code&gt;&amp;lt;computername&amp;gt;.local&lt;/code&gt; names. Good thing is that &lt;code&gt;avahi&lt;/code&gt; works out of the box for Android. Sadly not for&#xA;the two Windows 10 gaming computers that two of my sons uses. (No Fortnite on Linux.)&lt;/p&gt;&#xA;&lt;p&gt;But for some reason &lt;code&gt;.local&lt;/code&gt; names didn&amp;rsquo;t work inside &lt;code&gt;incus&lt;/code&gt; containers, despite installing &lt;code&gt;avahi&lt;/code&gt; &amp;amp; co. Earlier today I did ask an LLM why, and it said:&lt;/p&gt;&#xA;&lt;p&gt;&lt;em&gt;On the host, edit &lt;code&gt;/etc/avahi/avahi-daemon.conf&lt;/code&gt; and make sure you have set &lt;code&gt;enable-reflector&lt;/code&gt; to &lt;code&gt;yes&lt;/code&gt;, like this:&lt;/em&gt;&lt;/p&gt;&#xA;&lt;pre style=&#34;color:#c0caf5;background-color:#1a1b26;-webkit-text-size-adjust:none;&#34;&gt;&lt;code&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#bb9af7&#34;&gt;[reflector]&lt;/span&gt;&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#7aa2f7&#34;&gt;enable-reflector&lt;/span&gt;&lt;span style=&#34;color:#9ece6a;font-weight:bold&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#9ece6a&#34;&gt;yes&lt;/span&gt;&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;And after &lt;code&gt;sudo systemctl restart avahi-daemon&lt;/code&gt;, &lt;code&gt;.local&lt;/code&gt; names started to work inside &lt;code&gt;incus&lt;/code&gt; containers.&lt;/p&gt;&#xA;</content>
+    <link href="http://gmelchett.github.io/2026-08-08/avahi.html" rel="alternate"></link>
+    <summary type="html">I used to have a /etc/host that lists all my computers but with time that always got outdated, and sometimes out of sync with the DHCP server on my router.&#xA;For a brief period I tried with a subordinat...</summary>
+  </entry>
   <entry>
     <title>GitHub pages and static site generators</title>
     <updated>2026-08-07T00:00:00Z</updated>

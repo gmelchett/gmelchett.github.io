@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>.local inside incus containers</title>
+    <link rel="icon" type="image/x-icon" href="../favicon.ico">
+    <link rel="alternate" type="application/rss+xml" title="Jonas&#39; Mumblings RSS" href="../feed.xml">
+    <link rel="alternate" type="application/atom+xml" title="Jonas&#39; Mumblings Atom" href="../atom.xml">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="layout">
+        <div class="content">
+            <nav class="back-link"><a href="../index.html">&larr; home</a></nav>
+            <main>
+                <article>
+                    <header>
+                        <h1>.local inside incus containers</h1>
+                        <p class="post-meta"><time>Saturday, 8th August 2026</time></p>
+                    </header>
+                    <p>I used to have a <code>/etc/host</code> that lists all my computers but with time that always got outdated, and sometimes out of sync with the DHCP server on my router.
+For a brief period I tried with a subordinate DNS server, but that didn&rsquo;t really work well with Android for some reason I couldn&rsquo;t figure out. So I changed
+to install <code>avahi</code> on all my computers to provide <code>&lt;computername&gt;.local</code> names. Good thing is that <code>avahi</code> works out of the box for Android. Sadly not for
+the two Windows 10 gaming computers that two of my sons uses. (No Fortnite on Linux.)</p>
+<p>But for some reason <code>.local</code> names didn&rsquo;t work inside <code>incus</code> containers, despite installing <code>avahi</code> &amp; co. Earlier today I did ask an LLM why, and it said:</p>
+<p><em>On the host, edit <code>/etc/avahi/avahi-daemon.conf</code> and make sure you have set <code>enable-reflector</code> to <code>yes</code>, like this:</em></p>
+<pre style="color:#c0caf5;background-color:#1a1b26;-webkit-text-size-adjust:none;"><code><span style="display:flex;"><span><span style="color:#bb9af7">[reflector]</span>
+</span></span><span style="display:flex;"><span><span style="color:#7aa2f7">enable-reflector</span><span style="color:#9ece6a;font-weight:bold">=</span><span style="color:#9ece6a">yes</span>
+</span></span></code></pre><p>And after <code>sudo systemctl restart avahi-daemon</code>, <code>.local</code> names started to work inside <code>incus</code> containers.</p>
+
+                </article>
+            </main>
+            <footer class="site-footer">© 2026 Jonas Åberg. Licensed under CC BY. Contact: cja@lithops.se</footer>
+        </div>
+    </div>
+</body>
+</html>
