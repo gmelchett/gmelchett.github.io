@@ -1,5 +1,5 @@
 ---
-title: Latest text LLMs at openrouter.ai
+title: Latest text LLMs at openrouter.ai as RSS feed
 ---
 
 I've found myself visiting [openrouter.ai/models](https://openrouter.ai/models) quite often to see what

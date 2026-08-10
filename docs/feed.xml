@@ -4,9 +4,9 @@
     <link>http://gmelchett.github.io</link>
     <description>Jonas&#39; Mumblings</description>
     <managingEditor> (Jonas&#39; Mumblings)</managingEditor>
-    <pubDate>Mon, 10 Aug 2026 16:55:42 +0200</pubDate>
+    <pubDate>Mon, 10 Aug 2026 16:56:34 +0200</pubDate>
     <item>
-      <title>Latest text LLMs at openrouter.ai</title>
+      <title>Latest text LLMs at openrouter.ai as RSS feed</title>
       <link>http://gmelchett.github.io/2026-08-10/models.html</link>
       <description>I&amp;rsquo;ve found myself visiting openrouter.ai/models quite often to see what&#xA;new LLMs there are. So today I though, Why not create an RSS feed? And for $0.02, I got model2rss&#xA;to do the job for me. (Y...</description>
       <content:encoded><![CDATA[<p>I&rsquo;ve found myself visiting <a href="https://openrouter.ai/models">openrouter.ai/models</a> quite often to see what
