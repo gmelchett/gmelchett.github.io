@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><feed xmlns="http://www.w3.org/2005/Atom">
   <title>Jonas&#39; Mumblings</title>
   <id>http://gmelchett.github.io</id>
-  <updated>2026-08-10T16:55:25+02:00</updated>
+  <updated>2026-08-10T16:55:42+02:00</updated>
   <subtitle>Jonas&#39; Mumblings</subtitle>
   <link href="http://gmelchett.github.io"></link>
   <author>
@@ -11,9 +11,9 @@
     <title>Latest text LLMs at openrouter.ai</title>
     <updated>2026-08-10T00:00:00Z</updated>
     <id>http://gmelchett.github.io/2026-08-10/models.html</id>
-    <content type="html">&lt;p&gt;I&amp;rsquo;ve found myself visiting [openrouter.ai/models])https://openrouter.ai/models) quite often to see what&#xA;new LLMs there are. So today I though, &lt;em&gt;Why not create an RSS feed?&lt;/em&gt; And for $0.02, I got &lt;a href=&#34;https://github.com/gmelchett/model2rss&#34;&gt;model2rss&lt;/a&gt;&#xA;to do the job for me. (Yes, it should better be &lt;em&gt;models2rss&lt;/em&gt;&amp;hellip;)&lt;/p&gt;&#xA;</content>
+    <content type="html">&lt;p&gt;I&amp;rsquo;ve found myself visiting &lt;a href=&#34;https://openrouter.ai/models&#34;&gt;openrouter.ai/models&lt;/a&gt; quite often to see what&#xA;new LLMs there are. So today I though, &lt;em&gt;Why not create an RSS feed?&lt;/em&gt; And for $0.02, I got &lt;a href=&#34;https://github.com/gmelchett/model2rss&#34;&gt;model2rss&lt;/a&gt;&#xA;to do the job for me. (Yes, it should better be &lt;em&gt;models2rss&lt;/em&gt;&amp;hellip;)&lt;/p&gt;&#xA;</content>
     <link href="http://gmelchett.github.io/2026-08-10/models.html" rel="alternate"></link>
-    <summary type="html">I&amp;rsquo;ve found myself visiting [openrouter.ai/models])https://openrouter.ai/models) quite often to see what&#xA;new LLMs there are. So today I though, Why not create an RSS feed? And for $0.02, I got mo...</summary>
+    <summary type="html">I&amp;rsquo;ve found myself visiting openrouter.ai/models quite often to see what&#xA;new LLMs there are. So today I though, Why not create an RSS feed? And for $0.02, I got model2rss&#xA;to do the job for me. (Y...</summary>
   </entry>
   <entry>
     <title>.local inside incus containers</title>
