@@ -26,7 +26,8 @@ Switching to a more powerful LLM did help. It did figure out that I somehow had 
 and then the LLM asked if it could  downloaded some testing framework that helped the LLM to see the visuals.
 Then the stronger LLM realized that I was right and corrected the javascript.
 
-The final version of [Yukon](https://github.com/gmelchett/yukon/) and a playable copy is [here](yukon.html)
+The final version of [Yukon](https://github.com/gmelchett/yukon/) and a playable copy is [here](https://gmelchett.github.io/2026-09-13/yukon/index.html)
+It is also configured to be a PWA, so it can be installed like an app.
 
 Works fine on my Android Tablet and Linux Desktop both using Firefox. You can either drag and drop or click to select
 and then click on a card to move. It has also rounds won/lost statistics saved as cookies. I hoover around 45-50%
