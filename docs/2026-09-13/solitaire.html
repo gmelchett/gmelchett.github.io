@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solitaire web game - Yukon</title>
+    <link rel="icon" type="image/x-icon" href="../favicon.ico">
+    <link rel="alternate" type="application/rss+xml" title="Jonas&#39; Mumblings RSS" href="../feed.xml">
+    <link rel="alternate" type="application/atom+xml" title="Jonas&#39; Mumblings Atom" href="../atom.xml">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="layout">
+        <div class="content">
+            <nav class="back-link"><a href="../index.html">&larr; home</a></nav>
+            <main>
+                <article>
+                    <header>
+                        <h1>Solitaire web game - Yukon</h1>
+                        <p class="post-meta"><time>Sunday, 13th September 2026</time></p>
+                    </header>
+                    <p>Most evenings I play a few rounds of Yukon Solitaire to unwind before going to bed.
+I&rsquo;ve been doing that for years and it works very well for me.
+My favorite is <a href="https://f-droid.org/packages/de.tobiasbielefeld.solitaire/">Simple Solitaire</a> but it has
+not been updated for about eight years. The <a href="https://github.com/TobiasBielefeld/Simple-Solitaire">source code</a>
+is still available though, so it is possible to rebuild against a newer Android SDK etc.</p>
+<p>However, having in mind that Google is locking down Android more and more, I though <em>Can one make a web version?</em></p>
+<ul>
+<li>I can&rsquo;t - not without a serious start up time, since I don&rsquo;t know Javascript at all, my HTML knowledge is mostly
+from around year 2000. And I&rsquo;m not that interested in frontend development really.</li>
+</ul>
+<p>But can an LLM do the job? When you ask an LLM do to something that you can do yourself giving enough time and
+energy, you can always provide useful input when the LLM has issues, which they all have from time to time. But
+in an area where you don&rsquo;t know how properly do things, you are on thin ice.</p>
+<p>The first attempt that the LLM did, did look like some kind of solitaire, but to me as a human it was obvious that
+the game did first decide which cards that should face up and which to face down and then shuffle and
+deal. There the LLM and I got into a stalemate. The LLM was convinced that everything looked as it should,
+while I was convinced that this was not how Yukon is dealt properly.</p>
+<p>Switching to a more powerful LLM did help. It did figure out that I somehow had gotten <code>node</code> and <code>npm</code> installed
+and then the LLM asked if it could  downloaded some testing framework that helped the LLM to see the visuals.
+Then the stronger LLM realized that I was right and corrected the javascript.</p>
+<p>The final version of <a href="https://github.com/gmelchett/yukon/">Yukon</a> and a playable copy is <a href="yukon.html">here</a></p>
+<p>Works fine on my Android Tablet and Linux Desktop both using Firefox. You can either drag and drop or click to select
+and then click on a card to move. It has also rounds won/lost statistics saved as cookies. I hoover around 45-50%
+games won - how about you?</p>
+<p>For the moment, I&rsquo;ll stick with Simple Solitaire, but it is nice that I now have another option that an
+ads filled version from Google Play the day when Google decides that Simple Solitaire is too old, or a security risk, or
+the developer hasn&rsquo;t provided a copy of his passport to them or something else - All for &ldquo;my&rdquo; security.</p>
+<p>I am however interested in doing one more javascript game. Something like <a href="https://play.google.com/store/apps/details?id=com.ravensburger.memory&amp;hl=en-US">Ravensburger&rsquo;s Memory</a>
+It is pretty slow, and it feels like a product where neither the product lead nor the developers actually play
+the game. We&rsquo;ll see..</p>
+
+                </article>
+            </main>
+            <footer class="site-footer">© 2026 Jonas Åberg. Licensed under CC BY. Contact: cja@lithops.se</footer>
+        </div>
+    </div>
+</body>
+</html>

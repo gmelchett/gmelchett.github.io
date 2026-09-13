@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#1a6b3c">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Yukon">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="icon-512.png">
+<title>Yukon Solitaire</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  /* Disable Firefox for Android pull-to-refresh / swipe-to-reload */
+  overscroll-behavior-y: none;
+}
+
+body {
+  background: #1a6b3c;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+  /* Stop the browser from hijacking touch gestures for scroll/zoom,
+     so the game's own pointer/drag handling gets the touches */
+  overscroll-behavior-y: none;
+  touch-action: none;
+}
+
+/* Sprite sheets loaded as images, used via background-position */
+.sprite-sheet { display: none; }
+
+#header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  background: rgba(0,0,0,0.25);
+  color: #fff;
+  font-size: 14px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+#header h1 { font-size: 18px; font-weight: 600; white-space: nowrap; }
+#header .info { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+#header .info span { opacity: 0.9; }
+
+.btn {
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.25);
+  color: #fff;
+  padding: 6px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: background 0.15s;
+}
+.btn:hover { background: rgba(255,255,255,0.25); }
+
+#game {
+  position: relative;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 16px 8px 32px;
+  min-height: calc(100vh - 44px);
+  display: flex;
+  flex-direction: row-reverse; /* foundations (first child) sit on the right */
+  align-items: flex-start;
+  justify-content: center;
+  gap: 16px;
+}
+
+/* Rows */
+#foundations {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 0 0 auto;
+}
+#tableau {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex: 0 0 auto;
+  min-width: 0;
+}
+
+.stack {
+  position: relative;
+  width: var(--card-w);
+  min-height: var(--card-h);
+}
+
+.stack-placeholder {
+  width: 100%;
+  height: var(--card-h);
+  border: 2px dashed rgba(255,255,255,0.3);
+  border-radius: 6px;
+  position: absolute;
+  top: 0; left: 0;
+}
+
+.foundation-stack .stack-placeholder {
+  border-color: rgba(255,255,255,0.4);
+  background: rgba(0,0,0,0.1);
+}
+
+.foundation-stack .stack-placeholder::after {
+  content: '';
+  display: block;
+  width: 36px;
+  height: 36px;
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(255,255,255,0.12);
+  border-radius: 50%;
+}
+
+.card {
+  position: absolute;
+  width: var(--card-w);
+  height: var(--card-h);
+  border-radius: var(--card-r);
+  cursor: pointer;
+  background-size: var(--sprite-w) var(--sprite-h);
+  image-rendering: auto;
+  transition: transform 0.1s ease-out, box-shadow 0.1s ease-out;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.card.face-down {
+  box-shadow: 0 1px 3px rgba(0,0,0,0.35);
+}
+
+.card.face-up {
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+
+.card.dragging {
+  z-index: 10000 !important;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  transition: none;
+  will-change: transform;
+}
+
+.card.highlight {
+  box-shadow: 0 0 0 3px #ffeb3b, 0 4px 12px rgba(0,0,0,0.3);
+  z-index: 5;
+}
+
+.card.selected {
+  box-shadow: 0 0 0 3px #4dd0e1, 0 4px 12px rgba(0,0,0,0.35);
+  z-index: 6;
+}
+
+/* Win overlay */
+#win-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.75);
+  z-index: 20000;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  color: #fff;
+}
+#win-overlay.show { display: flex; }
+#win-overlay h2 { font-size: 48px; margin-bottom: 16px; text-shadow: 0 2px 8px rgba(0,0,0,0.5); }
+#win-overlay p { font-size: 20px; margin-bottom: 24px; opacity: 0.9; }
+
+/* Responsive */
+:root {
+  --card-w: 80px;
+  --card-h: 115px;
+  --card-r: 5px;
+  --sprite-w: 1729px;
+  --sprite-h: 1200px;
+}
+
+/* Tablets / small laptops: shrink cards so the 7 tableau columns plus the
+   right-hand foundation column all fit. */
+@media (max-width: 800px) {
+  :root {
+    --card-w: 52px;
+    --card-h: 75px;
+  }
+  #game { gap: 12px; }
+  #tableau, #foundations { gap: 6px; }
+  #header h1 { font-size: 15px; }
+  .btn { padding: 5px 10px; font-size: 12px; }
+}
+
+/* Phones: smaller still so all 8 columns (7 tableau + 1 foundation) fit. */
+@media (max-width: 480px) {
+  :root {
+    --card-w: 38px;
+    --card-h: 55px;
+  }
+  #game { gap: 10px; padding: 12px 4px 24px; }
+  #tableau, #foundations { gap: 5px; }
+}
+
+/* Short viewports (phone/tablet in landscape): height is the constraint, so
+   shrink cards enough that the right-hand 4-card foundation column fits. */
+@media (max-height: 480px) {
+  :root {
+    --card-w: 36px;
+    --card-h: 52px;
+  }
+  #game { gap: 10px; padding: 10px 4px 16px; }
+  #tableau, #foundations { gap: 5px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Sprite sheets -->
+<img id="spr-fronts" class="sprite-sheet" src="cards_dondorf.png">
+<img id="spr-backs" class="sprite-sheet" src="backgrounds_cards.png">
+
+<div id="header">
+  <h1>Yukon Solitaire</h1>
+  <div class="info">
+    <span>Won: <strong id="won">0</strong></span>
+    <span>Lost: <strong id="lost">0</strong></span>
+    <span>Win %: <strong id="winpct">0%</strong></span>
+    <button class="btn" id="btn-undo" title="Undo (Z)">Undo</button>
+    <button class="btn" id="btn-new" title="New Game (N)">New Game</button>
+    <button class="btn" id="btn-auto" title="Auto Complete">Auto</button>
+  </div>
+</div>
+
+<div id="game">
+  <div id="foundations"></div>
+  <div id="tableau"></div>
+</div>
+
+<div id="win-overlay">
+  <h2>You Win!</h2>
+  <p id="win-stats"></p>
+  <button class="btn" onclick="newGame()" style="font-size:18px; padding:10px 28px;">Play Again</button>
+</div>
+
+<script>
+// ── Constants ──
+// Suit mapping: Android index → { name, spriteRow }
+// Android: 0=clubs(row0), 1=hearts(row2), 2=spades(row3), 3=diamonds(row4)
+const SUITS = [
+  { name: 'clubs',    row: 0, color: 'black' },
+  { name: 'hearts',   row: 2, color: 'red'   },
+  { name: 'spades',   row: 3, color: 'black' },
+  { name: 'diamonds', row: 4, color: 'red'   }
+];
+const VALUES = ['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
+const CARD_BACK_THEME = 0; // first theme in backgrounds_cards.png
+
+// ── Sprite geometry ──
+const FRONT_COLS = 13;
+const FRONT_ROWS = 6;
+const BACK_COLS = 10;
+const BACK_ROWS = 4;
+
+
+// ── Game State ──
+let cards = [];       // { id, suit, value, faceUp, stackIdx }
+let stacks = [];      // each stack is an array of card ids
+let history = [];
+let gameOver = false;
+
+// ── Win/Loss stats (persisted in a cookie) ──
+let gamesWon = 0;
+let gamesLost = 0;
+let gameActive = false;   // a deal is in progress
+let gameResolved = false; // current game already counted (win or loss)
+
+function readCookie(name) {
+  try {
+    const m = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
+    return m ? decodeURIComponent(m[2]) : null;
+  } catch (e) {
+    return null; // cookies may be unavailable (e.g. opened via file://)
+  }
+}
+function writeCookie(name, value) {
+  try {
+    document.cookie = name + '=' + encodeURIComponent(value) +
+      '; path=/; max-age=31536000; SameSite=Lax';
+  } catch (e) {
+    // Cookies unavailable (e.g. file:// with cookies disabled) — stats stay
+    // in-memory for this session only.
+  }
+}
+function loadStats() {
+  gamesWon = parseInt(readCookie('yukon_won')) || 0;
+  gamesLost = parseInt(readCookie('yukon_lost')) || 0;
+}
+function saveStats() {
+  writeCookie('yukon_won', gamesWon);
+  writeCookie('yukon_lost', gamesLost);
+}
+
+// ── DOM Refs ──
+const tableauEl = document.getElementById('tableau');
+const foundationsEl = document.getElementById('foundations');
+const gameEl = document.getElementById('game');
+const wonEl = document.getElementById('won');
+const lostEl = document.getElementById('lost');
+const winpctEl = document.getElementById('winpct');
+const winOverlay = document.getElementById('win-overlay');
+
+// ── Drag State ──
+let dragCards = [];
+let dragOffsetX = 0;
+let dragOffsetY = 0;
+let dragSourceStack = -1;
+let currentDropTarget = -1;
+let isDragging = false;
+
+// ── Tap/Click Selection State ──
+let lastTapTime = 0;
+let lastTapCardId = -1;
+let didDrag = false;
+let selectedCardId = -1;   // top card of the currently selected pile
+// Per-stack vertical fan spacing (px). Computed per render so tall stacks
+// shrink their gap to stay on screen instead of overflowing the bottom.
+const stackOverlap = new Array(11).fill(0);
+
+// ── Init ──
+function init() {
+  loadStats();
+  tableauEl.innerHTML = '';
+  foundationsEl.innerHTML = '';
+  for (let i = 0; i < 7; i++) {
+    const s = document.createElement('div');
+    s.className = 'stack tableau-stack';
+    s.dataset.stack = i;
+    s.innerHTML = '<div class="stack-placeholder"></div>';
+    tableauEl.appendChild(s);
+  }
+  for (let i = 7; i < 11; i++) {
+    const s = document.createElement('div');
+    s.className = 'stack foundation-stack';
+    s.dataset.stack = i;
+    s.innerHTML = '<div class="stack-placeholder"></div>';
+    foundationsEl.appendChild(s);
+  }
+  newGame();
+}
+
+function newGame() {
+  // Abandoning an unresolved game counts as a loss.
+  if (gameActive && !gameResolved) registerLoss();
+  winOverlay.classList.remove('show');
+  gameOver = false;
+  history = [];
+  selectedCardId = -1;
+  gameActive = true;
+  gameResolved = false;
+  updateUI();
+
+  cards = [];
+  let id = 0;
+  for (let s = 0; s < 4; s++) {
+    for (let v = 0; v < 13; v++) {
+      cards.push({ id: id++, suit: s, value: v, faceUp: false, stackIdx: -1, color: SUITS[s].color });
+    }
+  }
+  // Shuffle an array of card ids, NOT the cards array itself.
+  // The rest of the code relies on cards[id] returning the card with that id,
+  // so reordering the cards array would scramble every lookup.
+  let deck = [];
+  for (let i = 0; i < cards.length; i++) deck.push(i);
+  shuffle(deck);
+
+  stacks = [[], [], [], [], [], [], [], [], [], [], []];
+
+  // Yukon deal
+  let cardIdx = 0;
+
+  // Stack 0: 1 card face-up
+  {
+    const c = cards[deck[cardIdx++]];
+    c.stackIdx = 0;
+    c.faceUp = true;
+    stacks[0].push(c.id);
+  }
+
+  // Stacks 1-6: i face-down cards + 5 face-up cards
+  for (let si = 1; si <= 6; si++) {
+    for (let j = 0; j < si + 5; j++) {
+      const c = cards[deck[cardIdx++]];
+      c.stackIdx = si;
+      stacks[si].push(c.id);
+      c.faceUp = j >= si;
+    }
+  }
+
+  renderAll();
+}
+
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+}
+
+// ── Rendering ──
+function renderAll() {
+  for (let si = 0; si < 11; si++) {
+    renderStack(si);
+  }
+  updateUI();
+  updateSelectionHighlight();
+}
+
+function renderStack(stackIdx) {
+  const stackEl = getStackElement(stackIdx);
+  stackEl.querySelectorAll('.card').forEach(el => el.remove());
+
+  const isFoundation = stackIdx >= 7;
+  const cardIds = stacks[stackIdx];
+  // Foundations stack cards at top:0 (only the top card is ever visible),
+  // so only tableau stacks need a dynamic fan that avoids overflow.
+  const overlap = isFoundation ? 0 : computeOverlap(stackEl, cardIds.length);
+  stackOverlap[stackIdx] = overlap;
+
+  cardIds.forEach((cid, idx) => {
+    const c = cards[cid];
+    const el = document.createElement('div');
+    el.className = 'card ' + (c.faceUp ? 'face-up' : 'face-down');
+    el.dataset.cardId = cid;
+    el.dataset.stackIdx = stackIdx;
+    el.dataset.idx = idx;
+
+    if (c.faceUp) {
+      const col = c.value;
+      const row = SUITS[c.suit].row;
+      el.style.backgroundImage = `url(${document.getElementById('spr-fronts').src})`;
+      el.style.backgroundRepeat = 'no-repeat';
+      // Scale the whole sheet so one cell exactly fills the card box. Using
+      // calc() with the responsive --card-w/--card-h vars keeps it correct
+      // on resize instead of clipping the oversized source cell.
+      el.style.backgroundSize = `calc(var(--card-w) * ${FRONT_COLS}) calc(var(--card-h) * ${FRONT_ROWS})`;
+      el.style.backgroundPosition = `calc(var(--card-w) * ${col} * -1) calc(var(--card-h) * ${row} * -1)`;
+    } else {
+      el.style.backgroundImage = `url(${document.getElementById('spr-backs').src})`;
+      el.style.backgroundRepeat = 'no-repeat';
+      el.style.backgroundSize = `calc(var(--card-w) * ${BACK_COLS}) calc(var(--card-h) * ${BACK_ROWS})`;
+      el.style.backgroundPosition = `0px calc(var(--card-h) * ${CARD_BACK_THEME} * -1)`;
+    }
+
+    el.style.top = (isFoundation ? 0 : idx * overlap) + 'px';
+    el.style.left = '0px';
+    stackEl.appendChild(el);
+  });
+}
+
+function getOverlap() {
+  const w = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--card-w'));
+  if (w <= 58) return 20;
+  if (w <= 70) return 24;
+  return 28;
+}
+
+// Default fan spacing for a stack, reduced if the stack is so tall that its
+// last card would fall past the bottom of the *visible* viewport. `stackEl`
+// is the .stack container (its position is unaffected by the absolutely
+// positioned cards inside it, so its bounding rect is stable during layout).
+//
+// getBoundingClientRect() returns coordinates relative to the visual viewport
+// (it already accounts for the address bar), so the space below the stack is
+// simply visualViewport.height - stackRect.top. We also clamp to the #game
+// element's own height as a safety net, in case the game board extends past
+// the visible area. (Compensating with visualViewport.offsetTop would
+// double-count the offset and make stacks look like they fit.)
+function computeOverlap(stackEl, count) {
+  const base = getOverlap();
+  if (count <= 1) return base;
+  const cardH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--card-h')) || 100;
+  const bottomMargin = 8; // breathing room above the very bottom edge
+
+  const stackRect = stackEl.getBoundingClientRect();
+  const vv = window.visualViewport;
+  const vh = vv ? vv.height : window.innerHeight;
+  // Distance from the top of the stack to the bottom of the visible viewport.
+  let avail = vh - stackRect.top - bottomMargin;
+  // Safety net: never exceed the actual game board height either.
+  if (gameEl) {
+    const gameRect = gameEl.getBoundingClientRect();
+    const stackTopInGame = stackRect.top - gameRect.top;
+    avail = Math.min(avail, gameRect.height - stackTopInGame - bottomMargin);
+  }
+
+  // Largest gap that lets the last card's bottom fit within the available height.
+  const maxOverlap = (avail - cardH) / (count - 1);
+  // Floor only keeps cards from fully collapsing; the priority is that every
+  // card stays on screen, even if the fan gets cramped on very tall stacks.
+  const minOverlap = 6;
+  return Math.max(minOverlap, Math.min(base, maxOverlap));
+}
+
+function getStackElement(idx) {
+  if (idx < 7) return tableauEl.children[idx];
+  return foundationsEl.children[idx - 7];
+}
+
+function updateUI() {
+  wonEl.textContent = gamesWon;
+  lostEl.textContent = gamesLost;
+  const total = gamesWon + gamesLost;
+  winpctEl.textContent = (total === 0 ? 0 : Math.round(gamesWon / total * 100)) + '%';
+}
+
+// ── Card Movement Logic ──
+function canPlaceOnTableau(cardId, stackIdx) {
+  const stack = stacks[stackIdx];
+  if (stack.length === 0) {
+    return cards[cardId].value === 12; // Only Kings
+  }
+  const topCard = cards[stack[stack.length - 1]];
+  const placingCard = cards[cardId];
+  return topCard.value === placingCard.value + 1 && topCard.color !== placingCard.color;
+}
+
+function canPlaceOnFoundation(cardId, stackIdx) {
+  const stack = stacks[stackIdx];
+  const c = cards[cardId];
+  if (stack.length === 0) return c.value === 0; // Ace
+  const topCard = cards[stack[stack.length - 1]];
+  return c.suit === topCard.suit && c.value === topCard.value + 1;
+}
+
+function getDropTargets(cardId) {
+  const targets = [];
+  for (let i = 0; i < 7; i++) {
+    if (canPlaceOnTableau(cardId, i)) targets.push(i);
+  }
+  for (let i = 7; i < 11; i++) {
+    if (canPlaceOnFoundation(cardId, i)) targets.push(i);
+  }
+  return targets;
+}
+
+function moveCards(cardIds, fromStack, toStack) {
+  const flippedId = [];
+
+  for (const cid of cardIds) {
+    const idx = stacks[fromStack].indexOf(cid);
+    stacks[fromStack].splice(idx, 1);
+    cards[cid].stackIdx = toStack;
+  }
+  stacks[toStack].push(...cardIds);
+
+  // Flip top of source
+  if (fromStack < 7 && stacks[fromStack].length > 0) {
+    const topId = stacks[fromStack][stacks[fromStack].length - 1];
+    if (!cards[topId].faceUp) {
+      cards[topId].faceUp = true;
+      flippedId.push(topId);
+    }
+  }
+
+  history.push({ cardIds: [...cardIds], fromStack, toStack, flippedId });
+  updateUI();
+}
+
+function undo() {
+  if (history.length === 0 || gameOver) return;
+  selectedCardId = -1;
+  const h = history.pop();
+
+  for (const cid of h.cardIds) {
+    const idx = stacks[h.toStack].indexOf(cid);
+    stacks[h.toStack].splice(idx, 1);
+    cards[cid].stackIdx = h.fromStack;
+  }
+  stacks[h.fromStack].push(...h.cardIds);
+
+  for (const fid of h.flippedId) {
+    cards[fid].faceUp = false;
+  }
+
+  updateUI();
+  renderAll();
+}
+
+// ── Drag & Drop ──
+function getCardAtPoint(x, y) {
+  const els = document.elementsFromPoint(x, y);
+  for (const el of els) {
+    if (el.classList.contains('card') && el.classList.contains('face-up')) return el;
+  }
+  return null;
+}
+
+function onPointerDown(e) {
+  if (gameOver) return;
+  const cardEl = e.target.closest('.card.face-up');
+
+  e.preventDefault();
+  const capturedEl = cardEl || e.target;
+  capturedEl.setPointerCapture(e.pointerId);
+
+  const startX = e.clientX, startY = e.clientY;
+  isDragging = false;
+  didDrag = false;
+  dragCards = [];
+  currentDropTarget = -1;
+
+  if (cardEl) {
+    const cardId = parseInt(cardEl.dataset.cardId);
+    const stackIdx = parseInt(cardEl.dataset.stackIdx);
+    const cardIdx = parseInt(cardEl.dataset.idx);
+    const movingIds = stacks[stackIdx].slice(cardIdx);
+
+    const rect = cardEl.getBoundingClientRect();
+    dragOffsetX = e.clientX - rect.left;
+    dragOffsetY = e.clientY - rect.top;
+    dragCards = movingIds;
+    dragSourceStack = stackIdx;
+
+    movingIds.forEach((cid, i) => {
+      const el = document.querySelector(`.card[data-card-id="${cid}"]`);
+      if (el) {
+        el.style.zIndex = 10000 + i;
+        el.style.position = 'absolute';
+      }
+    });
+  }
+
+  const onMove = (ev) => {
+    ev.preventDefault();
+    if (!isDragging && dragCards.length > 0) {
+      // Small jitter shouldn't start a drag (so taps still register).
+      if (Math.hypot(ev.clientX - startX, ev.clientY - startY) < 6) return;
+      isDragging = true;
+      didDrag = true;
+      selectedCardId = -1;            // a drag supersedes a click selection
+      updateSelectionHighlight();
+      dragCards.forEach(cid => {
+        const el = document.querySelector(`.card[data-card-id="${cid}"]`);
+        if (el) el.classList.add('dragging');
+      });
+    }
+    if (!isDragging) return;
+
+    const overlap2 = stackOverlap[dragSourceStack] || getOverlap();
+    dragCards.forEach((cid, i) => {
+      const el = document.querySelector(`.card[data-card-id="${cid}"]`);
+      if (el) {
+        const stackEl = el.parentElement;
+        const sr = stackEl.getBoundingClientRect();
+        el.style.left = (ev.clientX - sr.left - dragOffsetX) + 'px';
+        el.style.top = (ev.clientY - sr.top - dragOffsetY + i * overlap2) + 'px';
+      }
+    });
+
+    clearHighlights();
+    if (dragCards.length > 0) {
+      const targets = getDropTargets(dragCards[0]);
+      currentDropTarget = -1;
+      for (const t of targets) {
+        const sEl = getStackElement(t);
+        const r = sEl.getBoundingClientRect();
+        const cardEls = sEl.querySelectorAll('.card');
+        const bottomY = cardEls.length
+          ? cardEls[cardEls.length - 1].getBoundingClientRect().bottom
+          : r.bottom;
+        if (ev.clientX >= r.left - 15 && ev.clientX <= r.right + 15 &&
+            ev.clientY >= r.top - 15 && ev.clientY <= bottomY + 30) {
+          currentDropTarget = t;
+          sEl.querySelector('.stack-placeholder')?.classList.add('highlight');
+          break;
+        }
+      }
+      if (currentDropTarget >= 0 && stacks[currentDropTarget].length > 0) {
+        const topId = stacks[currentDropTarget][stacks[currentDropTarget].length - 1];
+        const topEl = document.querySelector(`.card[data-card-id="${topId}"]`);
+        if (topEl) topEl.classList.add('highlight');
+      }
+    }
+  };
+
+  const onUp = (ev) => {
+    capturedEl.releasePointerCapture(ev.pointerId);
+    document.removeEventListener('pointermove', onMove);
+    document.removeEventListener('pointerup', onUp);
+
+    clearHighlights();
+
+    let dropped = false;
+    if (isDragging && currentDropTarget >= 0 && dragCards.length > 0) {
+      moveCards([...dragCards], dragSourceStack, currentDropTarget);
+      dropped = true;
+      selectedCardId = -1;
+      updateSelectionHighlight();
+    } else if (!didDrag) {
+      const t = pickTarget(ev.clientX, ev.clientY);
+      if (t.stackIdx >= 0) handleTap(t.cardId, t.stackIdx);
+      else if (selectedCardId !== -1) {
+        selectedCardId = -1;
+        updateSelectionHighlight();
+      }
+    }
+
+    dragCards.forEach(cid => {
+      const el = document.querySelector(`.card[data-card-id="${cid}"]`);
+      if (el) {
+        el.classList.remove('dragging');
+        el.style.zIndex = '';
+        el.style.position = '';
+      }
+    });
+
+    dragCards = [];
+    currentDropTarget = -1;
+
+    renderAll();
+
+    if (dropped) {
+      checkWin();
+      checkAutoComplete();
+    }
+  };
+
+  document.addEventListener('pointermove', onMove);
+  document.addEventListener('pointerup', onUp);
+}
+
+function handleTap(cardId, stackIdx) {
+  const now = Date.now();
+
+  // Double click → send the card to a foundation ("final") stack.
+  if (cardId !== -1 && cardId === lastTapCardId && now - lastTapTime < 400) {
+    lastTapCardId = -1;
+    const moved = tryAutoPlace(cardId);
+    // A successful auto-move must not leave the card selected; an invalid one
+    // stays selected so the player can pick a different destination.
+    selectedCardId = moved ? -1 : cardId;
+    updateSelectionHighlight();
+    return;
+  }
+  lastTapTime = now;
+  lastTapCardId = cardId;
+
+  // No current selection → select this card (and the pile on top of it).
+  if (selectedCardId === -1) {
+    if (cardId !== -1) {
+      selectedCardId = cardId;
+      updateSelectionHighlight();
+    }
+    return;
+  }
+
+  // Clicking the already-selected card again → deselect.
+  if (cardId !== -1 && cardId === selectedCardId) {
+    selectedCardId = -1;
+    updateSelectionHighlight();
+    return;
+  }
+
+  // Move the selected pile onto the clicked stack.
+  const fromStack = cards[selectedCardId].stackIdx;
+  const idx = stacks[fromStack].indexOf(selectedCardId);
+  const movingIds = stacks[fromStack].slice(idx);
+  if (movePileToStack(movingIds, fromStack, stackIdx)) {
+    selectedCardId = -1;
+    updateSelectionHighlight();
+  } else {
+    // Invalid move → deselect the pile.
+    selectedCardId = -1;
+    updateSelectionHighlight();
+  }
+}
+
+function tryAutoPlace(cardId) {
+  const c = cards[cardId];
+  const fromStack = c.stackIdx;
+  if (stacks[fromStack][stacks[fromStack].length - 1] !== cardId) return false;
+  for (let fi = 7; fi < 11; fi++) {
+    if (canPlaceOnFoundation(cardId, fi)) {
+      moveCards([cardId], fromStack, fi);
+      renderAll();
+      checkWin();
+      checkAutoComplete();
+      return true;
+    }
+  }
+  return false;
+}
+
+function movePileToStack(movingIds, fromStack, toStack) {
+  if (toStack < 0 || fromStack === toStack || movingIds.length === 0) return false;
+  if (toStack >= 7) {
+    // Foundation stacks accept only a single card, in suit order.
+    if (movingIds.length !== 1) return false;
+    if (!canPlaceOnFoundation(movingIds[0], toStack)) return false;
+  } else {
+    if (!canPlaceOnTableau(movingIds[0], toStack)) return false;
+  }
+  moveCards([...movingIds], fromStack, toStack);
+  renderAll();
+  checkWin();
+  checkAutoComplete();
+  return true;
+}
+
+function pickTarget(x, y) {
+  const els = document.elementsFromPoint(x, y);
+  for (const el of els) {
+    if (el.classList.contains('card') && el.classList.contains('face-up')) {
+      return { cardId: parseInt(el.dataset.cardId), stackIdx: parseInt(el.dataset.stackIdx) };
+    }
+  }
+  for (const el of els) {
+    if (el.classList.contains('stack')) {
+      return { cardId: -1, stackIdx: parseInt(el.dataset.stack) };
+    }
+  }
+  return { cardId: -1, stackIdx: -1 };
+}
+
+function updateSelectionHighlight() {
+  document.querySelectorAll('.card.selected').forEach(el => el.classList.remove('selected'));
+  if (selectedCardId === -1) return;
+  const st = cards[selectedCardId].stackIdx;
+  const idx = stacks[st].indexOf(selectedCardId);
+  stacks[st].slice(idx).forEach(cid => {
+    const el = document.querySelector(`.card[data-card-id="${cid}"]`);
+    if (el) el.classList.add('selected');
+  });
+}
+
+function clearHighlights() {
+  document.querySelectorAll('.highlight').forEach(el => el.classList.remove('highlight'));
+}
+
+// ── Win/Loss recording ──
+function registerWin() {
+  if (gameResolved) return;
+  gameResolved = true;
+  gamesWon++;
+  saveStats();
+  updateUI();
+}
+function registerLoss() {
+  if (gameResolved) return;
+  gameResolved = true;
+  gamesLost++;
+  saveStats();
+  updateUI();
+}
+
+// ── Win Detection ──
+function checkWin() {
+  for (let fi = 7; fi < 11; fi++) {
+    if (stacks[fi].length !== 13) return;
+  }
+  gameOver = true;
+  document.getElementById('win-stats').textContent = 'You won this game!';
+  winOverlay.classList.add('show');
+  registerWin();
+}
+
+// ── Auto Complete ──
+function checkAutoComplete() {
+  for (let si = 0; si < 7; si++) {
+    const stack = stacks[si];
+    for (let i = 0; i < stack.length; i++) {
+      const c = cards[stack[i]];
+      if (!c.faceUp) return;
+      if (i > 0) {
+        const prev = cards[stack[i - 1]];
+        if (c.value !== prev.value - 1 || c.color === prev.color) return;
+      }
+    }
+  }
+}
+
+function autoComplete() {
+  if (gameOver) return;
+  let moved = false;
+  for (let si = 0; si < 7; si++) {
+    if (stacks[si].length === 0) continue;
+    const topId = stacks[si][stacks[si].length - 1];
+    for (let fi = 7; fi < 11; fi++) {
+      if (canPlaceOnFoundation(topId, fi)) {
+        moveCards([topId], si, fi);
+        moved = true;
+        break;
+      }
+    }
+  }
+  if (moved) {
+    renderAll();
+    setTimeout(autoComplete, 180);
+  } else {
+    checkWin();
+  }
+}
+
+function highlightCard(cardId) {
+  const el = document.querySelector(`.card[data-card-id="${cardId}"]`);
+  if (el) {
+    el.classList.add('highlight');
+    setTimeout(() => el.classList.remove('highlight'), 2000);
+  }
+}
+
+// ── Event Listeners ──
+tableauEl.addEventListener('pointerdown', onPointerDown);
+foundationsEl.addEventListener('pointerdown', onPointerDown);
+
+// Clicking the background (felt/header, anywhere that isn't a card or stack)
+// clears the current selection.
+document.addEventListener('pointerdown', (e) => {
+  if (e.target.closest('.card') || e.target.closest('.stack')) return;
+  if (selectedCardId !== -1) {
+    selectedCardId = -1;
+    updateSelectionHighlight();
+  }
+});
+
+document.getElementById('btn-undo').addEventListener('click', undo);
+document.getElementById('btn-new').addEventListener('click', newGame);
+document.getElementById('btn-auto').addEventListener('click', () => {
+  autoComplete();
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'z' || e.key === 'Z') undo();
+  if (e.key === 'n' || e.key === 'N') newGame();
+});
+
+document.addEventListener('contextmenu', e => e.preventDefault());
+
+// Recompute the dynamic card spacing when the viewport size changes
+// (orientation change, browser chrome show/hide, keyboard, etc.).
+let resizeTimer = null;
+function scheduleRerender() {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => { if (gameActive) renderAll(); }, 120);
+}
+window.addEventListener('resize', scheduleRerender);
+// Firefox/Android address-bar show/hide changes the visual viewport height
+// without firing a window resize, so listen to it directly.
+if (window.visualViewport) {
+  window.visualViewport.addEventListener('resize', scheduleRerender);
+  window.visualViewport.addEventListener('scroll', scheduleRerender);
+}
+
+// Leaving an unresolved game (reload or close) counts as a loss.
+window.addEventListener('pagehide', () => {
+  if (gameActive && !gameResolved) registerLoss();
+});
+window.addEventListener('beforeunload', () => {
+  if (gameActive && !gameResolved) registerLoss();
+});
+
+// Wait for sprite sheets to load
+window.addEventListener('load', init);
+
+// Register the service worker so the game can be installed as a local PWA
+// and played offline. Wrapped in try/catch so it never breaks the game
+// when opened directly via file:// (where SW registration is unavailable).
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch((err) => {
+      console.warn('Service worker registration failed:', err);
+    });
+  });
+}
+</script>
+</body>
+</html>
