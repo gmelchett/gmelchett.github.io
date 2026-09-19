@@ -4,7 +4,31 @@
     <link>http://gmelchett.github.io</link>
     <description>Jonas&#39; Mumblings</description>
     <managingEditor> (Jonas&#39; Mumblings)</managingEditor>
-    <pubDate>Sun, 13 Sep 2026 13:39:59 +0200</pubDate>
+    <pubDate>Sat, 19 Sep 2026 08:06:29 +0200</pubDate>
+    <item>
+      <title>How to run a C program in a fake terminal in a browser</title>
+      <link>http://gmelchett.github.io/2026-09-19/webterm.html</link>
+      <description>Last weekend, I did play with [Virtual machine][https://virtual-machine.pages.dev/] and it was a cool experience.&#xA;(Btw, it emulates a 32 bit x86 computer in software. I did boot alpine linux and /proc...</description>
+      <content:encoded><![CDATA[<p>Last weekend, I did play with [Virtual machine][https://virtual-machine.pages.dev/] and it was a cool experience.
+(Btw, it emulates a 32 bit x86 computer in software. I did boot alpine linux and <code>/proc/cpuinfo</code> showed a Pentium III)
+Anyway, once the virtual machine got started, I got - I guess - a 80x25 character large terminal. Which means today
+a lot of black area, unless you make the browser window very small or zoom in. (Perhaps there is a setting?) Then I wondered,
+how hard can it be to run a C program compiled as WASM in a fake terminal in a browser? No clue - so I asked an LLM to
+create an example for me (Great use of LLMs!) And it created <a href="https://gmelcehtt.github.io/2026-09-19/webterm/index.html">webterm</a>
+<a href="https://github.com/gmelchett/webterm">source</a></p>
+<p>The LLM did overdo it, I though about just a simple echo program, but it did create a fake shell.</p>
+<p><img src="webterm-browser.png" alt="webterm screenshot"></p>
+<p>Fake &ldquo;neofetch&rdquo; executed from a web browser</p>
+<p><img src="webterm-term.png" alt="webterm screenshot2"></p>
+<p>Fake &ldquo;neofetch&rdquo; executed from a terminal</p>
+<p>The &lsquo;javascript&rsquo; part could be much smaller, but once the LLM did create a terminal window, I couldn&rsquo;t resist the urge to
+ask for maximize, minimize and make it movable.</p>
+<p>A cool example, but I don&rsquo;t have any plans in exploring it further. There are plenty of usecases where web browsers are super useful,
+but running a terminal is perhaps not one of them.</p>
+]]></content:encoded>
+      <guid>http://gmelchett.github.io/2026-09-19/webterm.html</guid>
+      <pubDate>Sat, 19 Sep 2026 00:00:00 +0000</pubDate>
+    </item>
     <item>
       <title>Solitaire web game - Yukon</title>
       <link>http://gmelchett.github.io/2026-09-13/solitaire.html</link>
