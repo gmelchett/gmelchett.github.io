@@ -7,7 +7,7 @@ Last weekend, I did play with [Virtual machine][https://virtual-machine.pages.de
 Anyway, once the virtual machine got started, I got - I guess - a 80x25 character large terminal. Which means today
 a lot of black area, unless you make the browser window very small or zoom in. (Perhaps there is a setting?) Then I wondered,
 how hard can it be to run a C program compiled as WASM in a fake terminal in a browser? No clue - so I asked an LLM to
-create an example for me (Great use of LLMs!) And it created [webterm](https://gmelcehtt.github.io/2026-09-19/webterm/index.html)
+create an example for me (Great use of LLMs!) And it created [webterm](https://gmelchett.github.io/2026-09-19/webterm/index.html)
 [source](https://github.com/gmelchett/webterm)
 
 The LLM did overdo it, I though about just a simple echo program, but it did create a fake shell.

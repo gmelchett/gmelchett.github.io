@@ -4,7 +4,7 @@
     <link>http://gmelchett.github.io</link>
     <description>Jonas&#39; Mumblings</description>
     <managingEditor> (Jonas&#39; Mumblings)</managingEditor>
-    <pubDate>Sat, 19 Sep 2026 08:06:29 +0200</pubDate>
+    <pubDate>Sat, 19 Sep 2026 08:08:54 +0200</pubDate>
     <item>
       <title>How to run a C program in a fake terminal in a browser</title>
       <link>http://gmelchett.github.io/2026-09-19/webterm.html</link>
@@ -14,7 +14,7 @@
 Anyway, once the virtual machine got started, I got - I guess - a 80x25 character large terminal. Which means today
 a lot of black area, unless you make the browser window very small or zoom in. (Perhaps there is a setting?) Then I wondered,
 how hard can it be to run a C program compiled as WASM in a fake terminal in a browser? No clue - so I asked an LLM to
-create an example for me (Great use of LLMs!) And it created <a href="https://gmelcehtt.github.io/2026-09-19/webterm/index.html">webterm</a>
+create an example for me (Great use of LLMs!) And it created <a href="https://gmelchett.github.io/2026-09-19/webterm/index.html">webterm</a>
 <a href="https://github.com/gmelchett/webterm">source</a></p>
 <p>The LLM did overdo it, I though about just a simple echo program, but it did create a fake shell.</p>
 <p><img src="webterm-browser.png" alt="webterm screenshot"></p>
