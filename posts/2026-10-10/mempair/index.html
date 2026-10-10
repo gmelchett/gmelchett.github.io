@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#1a6b3c" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Memory Pair" />
+  <title>Memory Pair</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="icon-512.png" sizes="512x512" />
+  <link rel="apple-touch-icon" href="icon-512.png" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header id="header">
+    <h1>Memory Pair</h1>
+    <div class="stats">
+      <span>Moves: <strong id="moves">0</strong></span>
+      <span>Avg: <strong id="avg">-</strong></span>
+      <span>Best: <strong id="best">-</strong></span>
+    </div>
+    <label class="size-select">
+      Size:
+      <select id="size-select">
+        <option value="small">4 &times; 4 (16)</option>
+        <option value="medium">4 &times; 8 (32)</option>
+        <option value="large">6 &times; 8 (48)</option>
+        <option value="xlarge">6 &times; 12 (72)</option>
+      </select>
+    </label>
+    <label class="size-select">
+      Set:
+      <select id="set-select"></select>
+    </label>
+    <button id="restart" type="button">Restart</button>
+  </header>
+
+  <main>
+    <div id="board" class="board" aria-label="Memory game board"></div>
+    <div id="win-overlay">
+      <h2>You Win!</h2>
+      <p id="win-stats"></p>
+      <button class="btn" id="play-again" type="button">Play Again</button>
+    </div>
+  </main>
+
+  <script src="game.js"></script>
+  <script>
+  // Register the service worker so the game can be installed as a local PWA
+  // and played offline. Wrapped in try/catch so it never breaks the game
+  // when opened directly via file:// (where SW registration is unavailable).
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js').catch((err) => {
+        console.warn('Service worker registration failed:', err);
+      });
+    });
+  }
+  </script>
+</body>
+</html>

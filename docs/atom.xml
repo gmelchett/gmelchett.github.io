@@ -1,12 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?><feed xmlns="http://www.w3.org/2005/Atom">
   <title>Jonas&#39; Mumblings</title>
   <id>http://gmelchett.github.io</id>
-  <updated>2026-09-19T08:08:54+02:00</updated>
+  <updated>2026-10-10T14:22:24+02:00</updated>
   <subtitle>Jonas&#39; Mumblings</subtitle>
   <link href="http://gmelchett.github.io"></link>
   <author>
     <name>Jonas&#39; Mumblings</name>
   </author>
+  <entry>
+    <title>Mempair - Memory pair web game</title>
+    <updated>2026-10-10T00:00:00Z</updated>
+    <id>http://gmelchett.github.io/2026-10-10/mempair.html</id>
+    <content type="html">&lt;p&gt;I like &lt;a href=&#34;https://play.google.com/store/apps/details?id=com.ravensburger.memory&amp;amp;hl=en-US&#34;&gt;Memory&lt;/a&gt; game implementation, but not the menu system,&#xA;nor that it is pretty slow in most aspects. So I decided to see if an LLM could create a &amp;ldquo;better&amp;rdquo; variant of the same game, with using my&#xA;&lt;a href=&#34;https://github.com/gmelchett/yukon&#34;&gt;Yukon&lt;/a&gt; card web game as base. And yes, after some time with LLMs and like half a dollar in cost,&#xA;I&amp;rsquo;m pretty happy with the result. Most time was spend browsing for suitable card images. There are some that are not that good and I&amp;rsquo;ll&#xA;probably replace in later version. We&amp;rsquo;ll see.&#xA;Anyway, here is the &lt;a href=&#34;https://github.com/gmelchett/mempair&#34;&gt;source&lt;/a&gt; and playable version of &lt;a href=&#34;https://gmelchett.github.io/2026-10-10/mempair/index.html&#34;&gt;Mempair&lt;/a&gt;.&#xA;As with Yukon, it can be installed as a PWA, which I recommend to get rid of the browser menus.&lt;/p&gt;&#xA;</content>
+    <link href="http://gmelchett.github.io/2026-10-10/mempair.html" rel="alternate"></link>
+    <summary type="html">I like Memory game implementation, but not the menu system,&#xA;nor that it is pretty slow in most aspects. So I decided to see if an LLM could create a &amp;ldquo;better&amp;rdquo; variant of the same game, with...</summary>
+  </entry>
   <entry>
     <title>How to run a C program in a fake terminal in a browser</title>
     <updated>2026-09-19T00:00:00Z</updated>
